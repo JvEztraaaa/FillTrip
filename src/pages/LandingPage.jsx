@@ -17,13 +17,14 @@ export default function LandingPage() {
       <header className="absolute inset-x-0 top-0 z-50">
         <nav aria-label="Global" className="flex items-center justify-between p-6 lg:px-8">
           <div className="flex lg:flex-1">
-            <a href="#" className="-m-1.5 p-1.5">
-              <span className="sr-only">Your Company</span>
+            <a href="#" className="-m-1.5 p-1.5 flex items-center gap-2">
+              <span className="sr-only">FillTrip</span>
               <img
-                alt=""
-                src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=blue&shade=500"
-                className="h-8 w-auto"
+                alt="FillTrip Logo"
+                src="/images/logo.svg"
+                className="h-12 w-auto"
               />
+              <span className="text-2xl font-bold tracking-wide bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">FillTrip</span>
             </a>
           </div>
           <div className="flex lg:hidden">
@@ -53,13 +54,14 @@ export default function LandingPage() {
           <div className="fixed inset-0 z-50" />
           <DialogPanel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-gray-900 p-6 sm:max-w-sm sm:ring-1 sm:ring-gray-100/10">
             <div className="flex items-center justify-between">
-              <a href="#" className="-m-1.5 p-1.5">
-                <span className="sr-only">Your Company</span>
+              <a href="#" className="-m-1.5 p-1.5 flex items-center gap-2">
+                <span className="sr-only">FillTrip</span>
                 <img
-                  alt=""
-                  src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=blue&shade=500"
+                  alt="FillTrip Logo"
+                  src="/images/logo.png"
                   className="h-8 w-auto"
                 />
+                <span className="text-xl font-bold tracking-wide bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">FillTrip</span>
               </a>
               <button
                 type="button"

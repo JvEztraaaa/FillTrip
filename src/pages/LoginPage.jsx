@@ -33,8 +33,8 @@ export default function LoginPage() {
           <div className="flex flex-col items-center">
             <img
               alt="Your Company"
-              src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=blue&shade=500"
-              className="mx-auto h-12 w-auto mb-4"
+              src="/images/logo.svg"
+              className="mx-auto h-14 w-auto mb-4"
             />
             <h2 className="text-2xl lg:text-3xl font-bold tracking-tight text-white text-center">Log in to your account</h2>
             <p className="mt-2 text-center text-sm text-gray-400">
