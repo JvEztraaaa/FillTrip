@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Dialog, DialogPanel } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
+import { Link } from 'react-router-dom'
 
 const navigation = [
   { name: 'Home', href: '#' },
@@ -43,9 +44,9 @@ export default function LandingPage() {
             ))}
           </div>
           <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-            <a href="#" className="text-sm/6 font-semibold text-white transition-colors duration-200 hover:text-[#4FD1C5] hover:underline">
+            <Link to="/login" className="text-sm/6 font-semibold text-white transition-colors duration-200 hover:text-[#4FD1C5] hover:underline">
               Log in <span aria-hidden="true">&rarr;</span>
-            </a>
+            </Link>
           </div>
         </nav>
         <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">
@@ -83,12 +84,12 @@ export default function LandingPage() {
                   ))}
                 </div>
                 <div className="py-6">
-                  <a
-                    href="#"
+                  <Link
+                    to="/login"
                     className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-white hover:bg-white/5 transition-colors duration-200 hover:text-[#4FD1C5] hover:underline"
                   >
                     Log in
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -127,12 +128,12 @@ export default function LandingPage() {
               Enter your start and end locations, let <span className="font-bold text-[#168A8A]">FillTrip</span> calculate the distance, factor in your vehicle’s fuel efficiency, and get an accurate fuel cost estimate with real-time prices.
             </p>
             <div className="mt-10 flex items-center justify-center gap-x-6">
-              <a
-                href="#"
+              <Link
+                to="/login"
                 className="rounded-md bg-gradient-to-r from-[#168A8A] to-[#0B2C36] px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs transition-all duration-200 hover:from-[#0B2C36] hover:to-[#168A8A] hover:scale-105 hover:shadow-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#168A8A]"
               >
                 Get started
-              </a>
+              </Link>
               <a href="#" className="text-sm/6 font-semibold text-white transition-all duration-200 hover:underline hover:text-[#4FD1C5]">
                 Learn more <span aria-hidden="true">→</span>
               </a>
