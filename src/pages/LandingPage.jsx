@@ -58,7 +58,7 @@ export default function LandingPage() {
                 <span className="sr-only">FillTrip</span>
                 <img
                   alt="FillTrip Logo"
-                  src="/images/logo.png"
+                  src="/images/logo.svg"
                   className="h-8 w-auto"
                 />
                 <span className="text-xl font-bold tracking-wide bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">FillTrip</span>
