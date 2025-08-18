@@ -1,7 +1,106 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 export default function SignupPage() {
+  const [formData, setFormData] = useState({
+    fullName: '',
+    username: '',
+    email: '',
+    password: '',
+    confirmPassword: ''
+  });
+  const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+  
+  const { signup } = useAuth();
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }));
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!formData.fullName.trim()) {
+      newErrors.fullName = 'Full name is required';
+    }
+
+    if (!formData.username.trim()) {
+      newErrors.username = 'Username is required';
+    } else if (formData.username.length < 3) {
+      newErrors.username = 'Username must be at least 3 characters';
+    }
+
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email is required';
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email address';
+    }
+
+    if (!formData.password) {
+      newErrors.password = 'Password is required';
+    } else if (formData.password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters';
+    }
+
+    if (!formData.confirmPassword) {
+      newErrors.confirmPassword = 'Please confirm your password';
+    } else if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = 'Passwords do not match';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSubmitError('');
+    
+    if (!validateForm()) {
+      return;
+    }
+
+    setIsLoading(true);
+    
+    try {
+      const result = await signup({
+        fullName: formData.fullName,
+        username: formData.username,
+        email: formData.email,
+        password: formData.password
+      });
+
+      if (result.success) {
+        // Redirect to login page after successful signup
+        navigate('/login', { 
+          state: { 
+            message: 'Account created successfully! Please log in with your new credentials.' 
+          } 
+        });
+      } else {
+        setSubmitError(result.error);
+      }
+    } catch (error) {
+      setSubmitError('An unexpected error occurred. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
     return (
         <div className="relative min-h-screen flex flex-col lg:flex-row bg-gray-900 overflow-hidden">
             {/* Left: Image Section - Hidden on smaller screens */}
@@ -44,7 +143,7 @@ export default function SignupPage() {
                             </Link>
                         </p>
                     </div>
-                    <form className="mt-6 space-y-4">
+                    <form onSubmit={handleSubmit} className="mt-6 space-y-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label htmlFor="fullName" className="block text-sm font-medium text-gray-100">
@@ -54,10 +153,17 @@ export default function SignupPage() {
                                     id="fullName"
                                     name="fullName"
                                     type="text"
+                                    value={formData.fullName}
+                                    onChange={handleChange}
                                     autoComplete="name"
                                     required
-                                    className="mt-1 block w-full rounded-md bg-white/5 px-3 py-2 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#4FD1C5] border border-transparent focus:border-[#168A8A] transition"
+                                    className={`mt-1 block w-full rounded-md bg-white/5 px-3 py-2 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#4FD1C5] border transition ${
+                                        errors.fullName ? 'border-red-500 focus:border-red-500' : 'border-transparent focus:border-[#168A8A]'
+                                    }`}
                                 />
+                                {errors.fullName && (
+                                    <p className="mt-1 text-sm text-red-400">{errors.fullName}</p>
+                                )}
                             </div>
                             <div>
                                 <label htmlFor="username" className="block text-sm font-medium text-gray-100">
@@ -67,10 +173,17 @@ export default function SignupPage() {
                                     id="username"
                                     name="username"
                                     type="text"
+                                    value={formData.username}
+                                    onChange={handleChange}
                                     autoComplete="username"
                                     required
-                                    className="mt-1 block w-full rounded-md bg-white/5 px-3 py-2 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#4FD1C5] border border-transparent focus:border-[#168A8A] transition"
+                                    className={`mt-1 block w-full rounded-md bg-white/5 px-3 py-2 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#4FD1C5] border transition ${
+                                        errors.username ? 'border-red-500 focus:border-red-500' : 'border-transparent focus:border-[#168A8A]'
+                                    }`}
                                 />
+                                {errors.username && (
+                                    <p className="mt-1 text-sm text-red-400">{errors.username}</p>
+                                )}
                             </div>
                         </div>
                         <div>
@@ -81,10 +194,17 @@ export default function SignupPage() {
                                 id="email"
                                 name="email"
                                 type="email"
+                                value={formData.email}
+                                onChange={handleChange}
                                 autoComplete="email"
                                 required
-                                className="mt-1 block w-full rounded-md bg-white/5 px-3 py-2 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#4FD1C5] border border-transparent focus:border-[#168A8A] transition"
+                                className={`mt-1 block w-full rounded-md bg-white/5 px-3 py-2 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#4FD1C5] border transition ${
+                                    errors.email ? 'border-red-500 focus:border-red-500' : 'border-transparent focus:border-[#168A8A]'
+                                }`}
                             />
+                            {errors.email && (
+                                <p className="mt-1 text-sm text-red-400">{errors.email}</p>
+                            )}
                         </div>
                         <div>
                             <label htmlFor="password" className="block text-sm font-medium text-gray-100">
@@ -94,10 +214,17 @@ export default function SignupPage() {
                                 id="password"
                                 name="password"
                                 type="password"
+                                value={formData.password}
+                                onChange={handleChange}
                                 autoComplete="new-password"
                                 required
-                                className="mt-1 block w-full rounded-md bg-white/5 px-3 py-2 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#4FD1C5] border border-transparent focus:border-[#168A8A] transition"
+                                className={`mt-1 block w-full rounded-md bg-white/5 px-3 py-2 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#4FD1C5] border transition ${
+                                    errors.password ? 'border-red-500 focus:border-red-500' : 'border-transparent focus:border-[#168A8A]'
+                                }`}
                             />
+                            {errors.password && (
+                                <p className="mt-1 text-sm text-red-400">{errors.password}</p>
+                            )}
                         </div>
                         <div>
                             <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-100">
@@ -107,17 +234,30 @@ export default function SignupPage() {
                                 id="confirmPassword"
                                 name="confirmPassword"
                                 type="password"
+                                value={formData.confirmPassword}
+                                onChange={handleChange}
                                 autoComplete="new-password"
                                 required
-                                className="mt-1 block w-full rounded-md bg-white/5 px-3 py-2 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#4FD1C5] border border-transparent focus:border-[#168A8A] transition"
+                                className={`mt-1 block w-full rounded-md bg-white/5 px-3 py-2 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#4FD1C5] border transition ${
+                                    errors.confirmPassword ? 'border-red-500 focus:border-red-500' : 'border-transparent focus:border-[#168A8A]'
+                                }`}
                             />
+                            {errors.confirmPassword && (
+                                <p className="mt-1 text-sm text-red-400">{errors.confirmPassword}</p>
+                            )}
                         </div>
                         <div className="mt-8">
+                            {submitError && (
+                                <div className="bg-red-500/10 border border-red-500/20 rounded-md p-3">
+                                    <p className="text-red-400 text-sm">{submitError}</p>
+                                </div>
+                            )}
                             <button
                                 type="submit"
-                                className="flex w-full justify-center rounded-md bg-gradient-to-r from-[#168A8A] to-[#0B2C36] px-4 py-2 text-sm font-semibold text-white shadow-md transition-all duration-200 hover:from-[#0B2C36] hover:to-[#168A8A] hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#4FD1C5] focus:ring-offset-2 cursor-pointer"
+                                disabled={isLoading}
+                                className="flex w-full justify-center rounded-md bg-gradient-to-r from-[#168A8A] to-[#0B2C36] px-4 py-2 text-sm font-semibold text-white shadow-md transition-all duration-200 hover:from-[#0B2C36] hover:to-[#168A8A] hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#4FD1C5] focus:ring-offset-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                                Sign up
+                                {isLoading ? 'Creating account...' : 'Sign up'}
                             </button>
                         </div>
                         <div className="flex items-center my-4">

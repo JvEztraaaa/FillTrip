@@ -1,7 +1,89 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 export default function LoginPage() {
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
+  const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+  
+  const { login } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Check for success message from signup
+  useEffect(() => {
+    if (location.state?.message) {
+      setSuccessMessage(location.state.message);
+      // Clear the message from navigation state
+      navigate(location.pathname, { replace: true });
+    }
+  }, [location, navigate]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }));
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email is required';
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email address';
+    }
+
+    if (!formData.password) {
+      newErrors.password = 'Password is required';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSubmitError('');
+    
+    if (!validateForm()) {
+      return;
+    }
+
+    setIsLoading(true);
+    
+    try {
+      const result = await login({
+        email: formData.email,
+        password: formData.password
+      });
+
+      if (result.success) {
+        navigate('/map');
+      } else {
+        setSubmitError(result.error);
+      }
+    } catch (error) {
+      setSubmitError('An unexpected error occurred. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
   return (
     <div className="relative min-h-screen flex flex-col lg:flex-row bg-gray-900 overflow-hidden">
       {/* Left: Image Section - Hidden on smaller screens */}
@@ -43,8 +125,13 @@ export default function LoginPage() {
                 Create an account.
               </Link>
             </p>
+            {successMessage && (
+              <div className="mt-4 bg-green-500/10 border border-green-500/20 rounded-md p-3">
+                <p className="text-green-400 text-sm text-center">{successMessage}</p>
+              </div>
+            )}
           </div>
-          <form className="mt-8 space-y-6">
+          <form onSubmit={handleSubmit} className="mt-8 space-y-6">
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-100">
                 Email address
@@ -53,10 +140,17 @@ export default function LoginPage() {
                 id="email"
                 name="email"
                 type="email"
+                value={formData.email}
+                onChange={handleChange}
                 autoComplete="email"
                 required
-                className="mt-2 block w-full rounded-md bg-white/5 px-3 py-2 text-base text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#4FD1C5] border border-transparent focus:border-[#168A8A] transition"
+                className={`mt-2 block w-full rounded-md bg-white/5 px-3 py-2 text-base text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#4FD1C5] border transition ${
+                  errors.email ? 'border-red-500 focus:border-red-500' : 'border-transparent focus:border-[#168A8A]'
+                }`}
               />
+              {errors.email && (
+                <p className="mt-1 text-sm text-red-400">{errors.email}</p>
+              )}
             </div>
             <div>
               <div className="flex items-center justify-between">
@@ -71,10 +165,17 @@ export default function LoginPage() {
                 id="password"
                 name="password"
                 type="password"
+                value={formData.password}
+                onChange={handleChange}
                 autoComplete="current-password"
                 required
-                className="mt-2 block w-full rounded-md bg-white/5 px-3 py-2 text-base text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#4FD1C5] border border-transparent focus:border-[#168A8A] transition"
+                className={`mt-2 block w-full rounded-md bg-white/5 px-3 py-2 text-base text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#4FD1C5] border transition ${
+                  errors.password ? 'border-red-500 focus:border-red-500' : 'border-transparent focus:border-[#168A8A]'
+                }`}
               />
+              {errors.password && (
+                <p className="mt-1 text-sm text-red-400">{errors.password}</p>
+              )}
             </div>
             <div className="flex items-center">
               <input
@@ -87,12 +188,18 @@ export default function LoginPage() {
                 Remember me
               </label>
             </div>
+            {submitError && (
+              <div className="bg-red-500/10 border border-red-500/20 rounded-md p-3">
+                <p className="text-red-400 text-sm">{submitError}</p>
+              </div>
+            )}
             <div>
               <button
                 type="submit"
-                className="flex w-full justify-center rounded-md bg-gradient-to-r from-[#168A8A] to-[#0B2C36] px-4 py-2 text-sm font-semibold text-white shadow-md transition-all duration-200 hover:from-[#0B2C36] hover:to-[#168A8A] hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#4FD1C5] focus:ring-offset-2 cursor-pointer"
+                disabled={isLoading}
+                className="flex w-full justify-center rounded-md bg-gradient-to-r from-[#168A8A] to-[#0B2C36] px-4 py-2 text-sm font-semibold text-white shadow-md transition-all duration-200 hover:from-[#0B2C36] hover:to-[#168A8A] hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#4FD1C5] focus:ring-offset-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Log in
+                {isLoading ? 'Logging in...' : 'Log in'}
               </button>
             </div>
             <div className="flex items-center my-6">
