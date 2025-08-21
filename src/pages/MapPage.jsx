@@ -1,6 +1,6 @@
-import React from 'react';
-import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import React from "react";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export default function MapPage() {
   const { currentUser, logout } = useAuth();
@@ -8,13 +8,19 @@ export default function MapPage() {
 
   const handleLogout = () => {
     logout();
-    navigate('/');
+    navigate("/");
   };
 
   if (!currentUser) {
-    navigate('/login');
+    navigate("/login");
     return null;
   }
+
+  const formatMonthYear = (isoDate) => {
+    const d = new Date(isoDate);
+    if (Number.isNaN(d.getTime())) return "—";
+    return d.toLocaleDateString("en-US", { month: "long", year: "numeric" });
+  };
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
@@ -52,14 +58,24 @@ export default function MapPage() {
           <p className="text-gray-400 text-lg mb-8">
             Welcome to FillTrip! This is where the map functionality will be implemented.
           </p>
-          
+
           <div className="bg-gray-800 rounded-lg p-8 max-w-2xl mx-auto">
             <h2 className="text-2xl font-semibold mb-4">User Information</h2>
             <div className="space-y-2 text-left">
-              <p><span className="font-medium">Name:</span> {currentUser.fullName}</p>
-              <p><span className="font-medium">Username:</span> {currentUser.username}</p>
-              <p><span className="font-medium">Email:</span> {currentUser.email}</p>
-              <p><span className="font-medium">Member since:</span> {new Date(currentUser.createdAt).toLocaleDateString()}</p>
+              <p>
+                <span className="font-medium">Name:</span> {currentUser.fullName}
+              </p>
+              <p>
+                <span className="font-medium">Username:</span>{" "}
+                {currentUser.username}
+              </p>
+              <p>
+                <span className="font-medium">Email:</span> {currentUser.email}
+              </p>
+              <p>
+                <span className="font-medium">Member since:</span>{" "}
+                {formatMonthYear(currentUser.createdAt)}
+              </p>
             </div>
           </div>
         </div>

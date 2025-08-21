@@ -1,152 +1,103 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useEffect, useState } from "react";
 
-const AuthContext = createContext();
+const AuthContext = createContext(null);
 
 export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error("useAuth must be used within an AuthProvider");
+  return ctx;
 };
 
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Check for existing user session on app load
+  // On first load: try localStorage, then confirm with backend session
   useEffect(() => {
-    const savedUser = localStorage.getItem('filltrip_user');
-    if (savedUser) {
-      try {
-        setCurrentUser(JSON.parse(savedUser));
-      } catch (error) {
-        console.error('Error parsing saved user:', error);
-        localStorage.removeItem('filltrip_user');
+    (async () => {
+      const saved = localStorage.getItem("filltrip_user");
+      if (saved) {
+        try {
+          setCurrentUser(JSON.parse(saved));
+        } catch {
+          localStorage.removeItem("filltrip_user");
+        }
       }
-    }
-    setLoading(false);
+
+      // Confirm session with PHP (optional but recommended)
+      try {
+        const res = await fetch("/filltrip-db/me.php", {
+          method: "GET",
+          credentials: "include",
+        });
+        const data = await res.json();
+        if (data?.success && data.user) {
+          setCurrentUser(data.user);
+          localStorage.setItem("filltrip_user", JSON.stringify(data.user));
+        } else if (!saved) {
+          setCurrentUser(null);
+        }
+      } catch {
+        
+      } finally {
+        setLoading(false);
+      }
+    })();
   }, []);
 
-  // Signup function - future-proof for backend integration
+  // SIGNUP -> calls PHP signup; does NOT auto-login
   const signup = async (userData) => {
     try {
-      // TODO: Replace with actual backend API call
-      // const response = await fetch('/api/auth/signup', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(userData)
-      // });
-      // const data = await response.json();
-      
-      // For now, simulate backend response
-      const mockUser = {
-        id: Date.now().toString(),
-        email: userData.email,
-        username: userData.username,
-        fullName: userData.fullName,
-        createdAt: new Date().toISOString()
-      };
-
-      // Store user data (in real app, this would be a JWT token)
-      localStorage.setItem('filltrip_user', JSON.stringify(mockUser));
-      setCurrentUser(mockUser);
-      
-      return { success: true, user: mockUser };
-    } catch (error) {
-      console.error('Signup error:', error);
-      return { success: false, error: error.message };
+      const res = await fetch("/filltrip-db/signup.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(userData),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        return { success: false, error: data.error || "Signup failed" };
+      }
+      return { success: true };
+    } catch (e) {
+      return { success: false, error: e.message || "Network error" };
     }
   };
 
-  // Login function - future-proof for backend integration
-  const login = async (credentials) => {
+  // LOGIN -> email + password only
+  const login = async ({ email, password }) => {
     try {
-      // TODO: Replace with actual backend API call
-      // const response = await fetch('/api/auth/login', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(credentials)
-      // });
-      // const data = await response.json();
-
-      // For now, check against stored users
-      const storedUsers = JSON.parse(localStorage.getItem('filltrip_users') || '[]');
-      const user = storedUsers.find(u => u.email === credentials.email);
-      
-      if (!user) {
-        return { success: false, error: 'User not found. Please sign up first.' };
+      const res = await fetch("/filltrip-db/login.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include", // send/receive PHPSESSID cookie
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        return { success: false, error: data.error || "Invalid email or password" };
       }
-
-      // In real app, you'd verify password hash here
-      if (user.password !== credentials.password) {
-        return { success: false, error: 'Invalid password.' };
-      }
-
-      // Store current user session
-      localStorage.setItem('filltrip_user', JSON.stringify(user));
-      setCurrentUser(user);
-      
-      return { success: true, user };
-    } catch (error) {
-      console.error('Login error:', error);
-      return { success: false, error: error.message };
+      localStorage.setItem("filltrip_user", JSON.stringify(data.user));
+      setCurrentUser(data.user);
+      return { success: true, user: data.user };
+    } catch (e) {
+      return { success: false, error: e.message || "Network error" };
     }
   };
 
-  // Logout function
-  const logout = () => {
-    localStorage.removeItem('filltrip_user');
+  // LOGOUT
+  const logout = async () => {
+    try {
+      await fetch("/filltrip-db/logout.php", {
+        method: "POST",
+        credentials: "include",
+      });
+    } catch {}
+    localStorage.removeItem("filltrip_user");
     setCurrentUser(null);
   };
 
-  // Update signup to also store user in users list for login validation
-  const signupWithValidation = async (userData) => {
-    try {
-      // Check if user already exists
-      const storedUsers = JSON.parse(localStorage.getItem('filltrip_users') || '[]');
-      const existingUser = storedUsers.find(u => u.email === userData.email);
-      
-      if (existingUser) {
-        return { success: false, error: 'User with this email already exists.' };
-      }
+  const value = { currentUser, signup, login, logout, loading };
 
-      // Create new user
-      const newUser = {
-        id: Date.now().toString(),
-        email: userData.email,
-        username: userData.username,
-        fullName: userData.fullName,
-        password: userData.password, // In real app, this would be hashed
-        createdAt: new Date().toISOString()
-      };
-
-      // Store in users list
-      storedUsers.push(newUser);
-      localStorage.setItem('filltrip_users', JSON.stringify(storedUsers));
-
-      // Store current session
-      localStorage.setItem('filltrip_user', JSON.stringify(newUser));
-      setCurrentUser(newUser);
-      
-      return { success: true, user: newUser };
-    } catch (error) {
-      console.error('Signup error:', error);
-      return { success: false, error: error.message };
-    }
-  };
-
-  const value = {
-    currentUser,
-    signup: signupWithValidation,
-    login,
-    logout,
-    loading
-  };
-
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
