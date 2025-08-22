@@ -21,9 +21,9 @@ export default function ContactUsPage() {
     };
 
     return (
-        <div className="bg-gray-900 min-h-screen overflow-hidden">
+        <div className="bg-gray-900 min-h-screen flex flex-col">
             {/* Header */}
-            <header className="absolute inset-x-0 top-0 z-50">
+            <header className="relative z-50">
                 <nav aria-label="Global" className="flex items-center justify-between p-6 lg:px-8">
                     <div className="flex lg:flex-1">
                         <Link to="/" className="-m-1.5 p-1.5 flex items-center gap-2">
@@ -115,11 +115,11 @@ export default function ContactUsPage() {
             </header>
 
             {/* Main Content */}
-            <div className="isolate px-6 pt-20 lg:pt-28 lg:px-8 pb-40 min-h-screen">
+            <div className="isolate flex-1 px-6 pt-6 lg:pt-8 lg:px-8 pb-20">
                 {/* Decorative background */}
                 <div
                     aria-hidden="true"
-                    className="absolute top-0 left-0 -z-10 transform-gpu overflow-hidden blur-3xl"
+                    className="absolute inset-0 -z-10 transform-gpu overflow-hidden blur-3xl"
                 >
                     <div
                         style={{

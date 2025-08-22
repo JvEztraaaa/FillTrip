@@ -3,8 +3,10 @@
 /* Simple reset for specific elements only */
 html,
 body {
-  height: 100%;
-  overflow: hidden;
+  /* allow the page to grow and be scrollable on small devices */
+  min-height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 body {
