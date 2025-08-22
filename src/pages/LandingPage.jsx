@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 
 const navigation = [
   { name: 'Home', href: '#' },
-  { name: 'About', href: '#' },
+  { name: 'About', href: '/about' },
   { name: 'Contact Us', href: '#' },
 ]
 
@@ -38,12 +38,16 @@ export default function LandingPage() {
             </button>
           </div>
           <div className="hidden lg:flex lg:gap-x-12">
-            {navigation.map((item) => (
-              <a key={item.name} href={item.href} className="text-sm/6 font-semibold text-white transition-colors duration-200 hover:text-[#4FD1C5] hover:underline">
-                {item.name}
-              </a>
-            ))}
-          </div>
+              {navigation.map((item) => (
+                <a
+                  key={item.name}
+                  href={item.href}
+                  className="text-sm/6 font-semibold text-white transition-colors duration-200 hover:text-[#4FD1C5] hover:underline"
+                >
+                                        {item.name}
+                </a>
+              ))}
+            </div>
           <div className="hidden lg:flex lg:flex-1 lg:justify-end">
             <Link to="/login" className="text-sm/6 font-semibold text-white transition-colors duration-200 hover:text-[#4FD1C5] hover:underline">
               Log in <span aria-hidden="true">&rarr;</span>
