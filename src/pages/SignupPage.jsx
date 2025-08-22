@@ -303,13 +303,27 @@ export default function SignupPage() {
                             <span className="mx-4 text-gray-400 text-sm">Or continue with</span>
                             <div className="flex-grow border-t border-gray-700" />
                         </div>
-                        <div className="flex justify-center">
+                        <div className="flex justify-center gap-4 sm:gap-6">
                             <button
                                 type="button"
-                                className="flex items-center justify-center gap-2 rounded-md bg-gray-800 px-4 py-2 text-sm font-semibold text-white shadow transition hover:bg-[#168A8A] hover:text-white cursor-pointer"
+                                className="flex items-center justify-center gap-2 rounded-md bg-gray-800 px-4 py-2 text-sm font-semibold text-white shadow transition hover:bg-gray-600 hover:text-white cursor-pointer min-w-[120px] sm:min-w-[140px]"
                             >
-                                <svg className="h-5 w-5" viewBox="0 0 48 48"><g><path fill="#FFC107" d="M43.6 20.5h-1.9V20H24v8h11.3c-1.6 4.3-5.7 7-11.3 7-6.6 0-12-5.4-12-12s5.4-12 12-12c2.6 0 5 .8 7 2.3l5.7-5.7C33.3 5.1 28.9 3 24 3 12.9 3 4 11.9 4 23s8.9 20 20 20c11 0 20-9 20-20 0-1.3-.1-2.7-.4-4z" /><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.5 16.1 18.9 13 24 13c2.6 0 5 .8 7 2.3l5.7-5.7C33.3 5.1 28.9 3 24 3c-7.2 0-13.4 3.8-17 9.7z" /><path fill="#4CAF50" d="M24 43c4.8 0 9.3-1.6 12.8-4.4l-5.9-4.8C28.7 35.3 26.4 36 24 36c-5.6 0-10.3-3.6-12-8.5l-6.6 5.1C7.9 39.2 15.4 43 24 43z" /><path fill="#1976D2" d="M43.6 20.5h-1.9V20H24v8h11.3c-1.1 3-3.5 5.3-6.3 6.5l6.6 5.1C41.1 37.2 44 30.7 44 24c0-5.523-4.477-10-10-10z" /></g></svg>
-                                Google
+                                <svg className="h-5 w-5 flex-shrink-0" viewBox="0 0 48 48">
+                                  <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/>
+                                  <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/>
+                                  <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/>
+                                  <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>
+                                </svg>
+                                <span className="whitespace-nowrap">Google</span>
+                            </button>
+                            <button
+                                type="button"
+                                className="flex items-center justify-center gap-2 rounded-md bg-[#1877F2] px-4 py-2 text-sm font-semibold text-white shadow transition hover:bg-[#1565c0] hover:text-white cursor-pointer min-w-[120px] sm:min-w-[140px]"
+                            >
+                                <svg className="h-5 w-5 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                                </svg>
+                                <span className="whitespace-nowrap">Facebook</span>
                             </button>
                         </div>
                     </form>
