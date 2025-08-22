@@ -110,10 +110,10 @@ export default function SignupPage() {
                 <img
                     src="/images/login-bg.avif"
                     alt="Workspace"
-                    className="object-cover w-full h-full lg:rounded-none rounded-b-2xl shadow-lg opacity-60"
+                    className="object-cover w-full h-full lg:rounded-none rounded-b-2xl shadow-lg opacity-75"
                 />
                 {/* Dark overlay */}
-                <div className="absolute inset-0 bg-black opacity-40" />
+                <div className="absolute inset-0 bg-black opacity-30" />
             </div>
 
             {/* Right: Signup Form Section - Full width on smaller screens */}
