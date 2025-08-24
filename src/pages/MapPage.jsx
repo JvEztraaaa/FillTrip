@@ -183,19 +183,10 @@ const MapPage = () => {
           id: "route-line",
           type: "line",
           source: "route",
-          paint: { 
-            "line-color": "#4FD1C5", 
-            "line-width": 5, 
-            "line-opacity": 0.9,
-            "line-gradient": [
-              "interpolate",
-              ["linear"],
-              ["line-progress"],
-              0,
-              "#4FD1C5",
-              1,
-              "#63B3ED"
-            ]
+          paint: {
+            "line-color": "#4FD1C5",
+            "line-width": 5,
+            "line-opacity": 0.9
           },
           layout: {
             "line-cap": "round",
@@ -239,17 +230,19 @@ const MapPage = () => {
     });
 
     document.getElementById("clearBtn").addEventListener("click", () => {
-      if (startMarker) startMarker.remove();
-      if (endMarker) endMarker.remove();
-      startMarker = endMarker = null;
-      startCoords = endCoords = null;
-      startLabel.textContent = "Start: (none)";
-      endLabel.textContent = "End: (none)";
-      distanceEl.textContent = "--";
-      durationEl.textContent = "--";
-      stepsCard.style.display = "none";
-      stepsEl.innerHTML = "";
-      if (map.getSource("route")) map.getSource("route").setData(emptyLine());
+  if (startMarker) startMarker.remove();
+  if (endMarker) endMarker.remove();
+  startMarker = endMarker = null;
+  startCoords = endCoords = null;
+  startLabel.textContent = "Start: (none)";
+  endLabel.textContent = "End: (none)";
+  distanceEl.textContent = "--";
+  durationEl.textContent = "--";
+  stepsCard.style.display = "none";
+  stepsEl.innerHTML = "";
+  document.getElementById("searchStart").value = "";
+  document.getElementById("searchEnd").value = "";
+  if (map.getSource("route")) map.getSource("route").setData(emptyLine());
     });
 
     document.getElementById("swapBtn").addEventListener("click", () => {
@@ -289,14 +282,16 @@ const MapPage = () => {
     }
 
     // Add responsive behavior
+    let prevWidth = window.innerWidth;
     const handleResize = () => {
-      if (window.innerWidth < 768) {
+      const currWidth = window.innerWidth;
+      // Only close sidebar if resizing from desktop to mobile
+      if (prevWidth >= 768 && currWidth < 768 && !sidebar.classList.contains("closed")) {
         sidebar.classList.add("closed");
       }
+      prevWidth = currWidth;
     };
-    
     window.addEventListener("resize", handleResize);
-    handleResize(); // Initial check
 
     // --- Cleanup on unmount ---
     return () => {
@@ -322,14 +317,14 @@ const MapPage = () => {
 
   return (
     <div className="relative h-screen w-screen bg-gray-900">
-      {/* Map */}
-      <div id="map" className="absolute inset-0 h-full w-full" />
+      {/* Map - z-0 to ensure it's always below overlays */}
+      <div id="map" className="absolute inset-0 h-full w-full z-0" />
 
       {/* Header Bar with Hamburger and Title */}
-      <div className="absolute top-0 left-0 right-0 z-20 bg-gray-900 bg-opacity-80 backdrop-blur-sm flex items-center p-2">
+      <div className="fixed top-0 left-0 right-0 z-30 bg-gray-900 bg-opacity-80 backdrop-blur-sm flex items-center p-2">
         <button
-    onClick={toggleSidebar}
-    className="hamburger-btn mr-3 cursor-pointer"
+          onClick={() => { toggleSidebar(); setTimeout(() => { window.dispatchEvent(new Event('resize')); }, 350); }}
+          className="hamburger-btn mr-3 cursor-pointer"
           aria-label="Toggle sidebar"
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -341,10 +336,10 @@ const MapPage = () => {
         <h2 className="text-xl font-bold gradient-text">Filltrip Router</h2>
       </div>
 
-      {/* Sidebar */}
+      {/* Sidebar - z-20 so it's above map but below header */}
       <aside
         id="sidebar"
-        className="absolute top-0 left-0 h-full bg-gray-900 text-white shadow-lg p-4 overflow-y-auto transition-transform duration-300 z-10 max-w-full sm:max-w-sm md:max-w-md pt-2"
+        className="absolute top-0 left-0 h-full bg-gray-900 text-white shadow-lg p-4 overflow-y-auto transition-transform duration-300 z-20 max-w-full sm:max-w-sm md:max-w-md pt-2"
       >
         {/* Add some padding at the top to account for the header bar */}
         <div className="pt-12 mb-6"></div>
