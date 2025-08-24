@@ -3,106 +3,106 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 export default function SignupPage() {
-  const [formData, setFormData] = useState({
-    fullName: '',
-    username: '',
-    email: '',
-    password: '',
-    confirmPassword: ''
-  });
-  const [errors, setErrors] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
-  const [submitError, setSubmitError] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  
-  const { signup } = useAuth();
-  const navigate = useNavigate();
+    const [formData, setFormData] = useState({
+        fullName: '',
+        username: '',
+        email: '',
+        password: '',
+        confirmPassword: ''
+    });
+    const [errors, setErrors] = useState({});
+    const [isLoading, setIsLoading] = useState(false);
+    const [submitError, setSubmitError] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-    // Clear error when user starts typing
-    if (errors[name]) {
-      setErrors(prev => ({
-        ...prev,
-        [name]: ''
-      }));
-    }
-  };
+    const { signup } = useAuth();
+    const navigate = useNavigate();
 
-  const validateForm = () => {
-    const newErrors = {};
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+        // Clear error when user starts typing
+        if (errors[name]) {
+            setErrors(prev => ({
+                ...prev,
+                [name]: ''
+            }));
+        }
+    };
 
-    if (!formData.fullName.trim()) {
-      newErrors.fullName = 'Full name is required';
-    }
+    const validateForm = () => {
+        const newErrors = {};
 
-    if (!formData.username.trim()) {
-      newErrors.username = 'Username is required';
-    } else if (formData.username.length < 3) {
-      newErrors.username = 'Username must be at least 3 characters';
-    }
+        if (!formData.fullName.trim()) {
+            newErrors.fullName = 'Full name is required';
+        }
 
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
-    }
+        if (!formData.username.trim()) {
+            newErrors.username = 'Username is required';
+        } else if (formData.username.length < 3) {
+            newErrors.username = 'Username must be at least 3 characters';
+        }
 
-    if (!formData.password) {
-      newErrors.password = 'Password is required';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
-    }
+        if (!formData.email.trim()) {
+            newErrors.email = 'Email is required';
+        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+            newErrors.email = 'Please enter a valid email address';
+        }
 
-    if (!formData.confirmPassword) {
-      newErrors.confirmPassword = 'Please confirm your password';
-    } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
-    }
+        if (!formData.password) {
+            newErrors.password = 'Password is required';
+        } else if (formData.password.length < 6) {
+            newErrors.password = 'Password must be at least 6 characters';
+        }
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+        if (!formData.confirmPassword) {
+            newErrors.confirmPassword = 'Please confirm your password';
+        } else if (formData.password !== formData.confirmPassword) {
+            newErrors.confirmPassword = 'Passwords do not match';
+        }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setSubmitError('');
-    
-    if (!validateForm()) {
-      return;
-    }
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
 
-    setIsLoading(true);
-    
-    try {
-      const result = await signup({
-        fullName: formData.fullName,
-        username: formData.username,
-        email: formData.email,
-        password: formData.password
-      });
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setSubmitError('');
 
-      if (result.success) {
-        // Redirect to login page after successful signup
-        navigate('/login', { 
-          state: { 
-            message: 'Account created successfully! Please log in with your new credentials.' 
-          } 
-        });
-      } else {
-        setSubmitError(result.error);
-      }
-    } catch (error) {
-      setSubmitError('An unexpected error occurred. Please try again.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+        if (!validateForm()) {
+            return;
+        }
+
+        setIsLoading(true);
+
+        try {
+            const result = await signup({
+                fullName: formData.fullName,
+                username: formData.username,
+                email: formData.email,
+                password: formData.password
+            });
+
+            if (result.success) {
+                // Redirect to login page after successful signup
+                navigate('/login', {
+                    state: {
+                        message: 'Account created successfully! Please log in with your new credentials.'
+                    }
+                });
+            } else {
+                setSubmitError(result.error);
+            }
+        } catch (error) {
+            setSubmitError('An unexpected error occurred. Please try again.');
+        } finally {
+            setIsLoading(false);
+        }
+    };
     return (
         <div className="relative min-h-screen flex flex-col lg:flex-row bg-gray-900 overflow-hidden">
             {/* Left: Image Section - Hidden on smaller screens */}
@@ -112,7 +112,7 @@ export default function SignupPage() {
                     alt="Workspace"
                     className="object-cover w-full h-full lg:rounded-none rounded-b-2xl shadow-lg opacity-75"
                 />
-                {/* Dark overlay */}
+                { }
                 <div className="absolute inset-0 bg-black opacity-30" />
             </div>
 
@@ -123,7 +123,7 @@ export default function SignupPage() {
                     background: window.innerWidth >= 1024 ? 'linear-gradient(to top, rgba(22,138,138,0.6) 0%, rgba(22,138,138,0.4) 20%, rgba(22,138,138,0.2) 40%, rgba(22,138,138,0.1) 60%, transparent 80%)' : 'none',
                 }}
             >
-                {/* Back to Home positioned at top left */}
+                { }
                 <div className="absolute top-6 left-6 lg:left-8">
                     <Link to="/" className="text-sm text-[#4FD1C5] hover:text-[#168A8A] font-semibold transition-colors duration-200">
                         Back to Home
@@ -159,9 +159,8 @@ export default function SignupPage() {
                                     onChange={handleChange}
                                     autoComplete="name"
                                     required
-                                    className={`mt-1 block w-full rounded-md bg-white/5 px-3 py-2 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#4FD1C5] border transition ${
-                                        errors.fullName ? 'border-red-500 focus:border-red-500' : 'border-transparent focus:border-[#168A8A]'
-                                    }`}
+                                    className={`mt-1 block w-full rounded-md bg-white/5 px-3 py-2 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#4FD1C5] border transition ${errors.fullName ? 'border-red-500 focus:border-red-500' : 'border-transparent focus:border-[#168A8A]'
+                                        }`}
                                 />
                                 {errors.fullName && (
                                     <p className="mt-1 text-sm text-red-400">{errors.fullName}</p>
@@ -179,9 +178,8 @@ export default function SignupPage() {
                                     onChange={handleChange}
                                     autoComplete="username"
                                     required
-                                    className={`mt-1 block w-full rounded-md bg-white/5 px-3 py-2 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#4FD1C5] border transition ${
-                                        errors.username ? 'border-red-500 focus:border-red-500' : 'border-transparent focus:border-[#168A8A]'
-                                    }`}
+                                    className={`mt-1 block w-full rounded-md bg-white/5 px-3 py-2 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#4FD1C5] border transition ${errors.username ? 'border-red-500 focus:border-red-500' : 'border-transparent focus:border-[#168A8A]'
+                                        }`}
                                 />
                                 {errors.username && (
                                     <p className="mt-1 text-sm text-red-400">{errors.username}</p>
@@ -200,9 +198,8 @@ export default function SignupPage() {
                                 onChange={handleChange}
                                 autoComplete="email"
                                 required
-                                className={`mt-1 block w-full rounded-md bg-white/5 px-3 py-2 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#4FD1C5] border transition ${
-                                    errors.email ? 'border-red-500 focus:border-red-500' : 'border-transparent focus:border-[#168A8A]'
-                                }`}
+                                className={`mt-1 block w-full rounded-md bg-white/5 px-3 py-2 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#4FD1C5] border transition ${errors.email ? 'border-red-500 focus:border-red-500' : 'border-transparent focus:border-[#168A8A]'
+                                    }`}
                             />
                             {errors.email && (
                                 <p className="mt-1 text-sm text-red-400">{errors.email}</p>
@@ -221,9 +218,8 @@ export default function SignupPage() {
                                     onChange={handleChange}
                                     autoComplete="new-password"
                                     required
-                                    className={`mt-1 block w-full rounded-md bg-white/5 px-3 py-2 pr-10 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#4FD1C5] border transition ${
-                                        errors.password ? 'border-red-500 focus:border-red-500' : 'border-transparent focus:border-[#168A8A]'
-                                    }`}
+                                    className={`mt-1 block w-full rounded-md bg-white/5 px-3 py-2 pr-10 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#4FD1C5] border transition ${errors.password ? 'border-red-500 focus:border-red-500' : 'border-transparent focus:border-[#168A8A]'
+                                        }`}
                                 />
                                 <button
                                     type="button"
@@ -259,9 +255,8 @@ export default function SignupPage() {
                                     onChange={handleChange}
                                     autoComplete="new-password"
                                     required
-                                    className={`mt-1 block w-full rounded-md bg-white/5 px-3 py-2 pr-10 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#4FD1C5] border transition ${
-                                        errors.confirmPassword ? 'border-red-500 focus:border-red-500' : 'border-transparent focus:border-[#168A8A]'
-                                    }`}
+                                    className={`mt-1 block w-full rounded-md bg-white/5 px-3 py-2 pr-10 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#4FD1C5] border transition ${errors.confirmPassword ? 'border-red-500 focus:border-red-500' : 'border-transparent focus:border-[#168A8A]'
+                                        }`}
                                 />
                                 <button
                                     type="button"
@@ -309,10 +304,10 @@ export default function SignupPage() {
                                 className="flex items-center justify-center gap-2 rounded-md bg-gray-800 px-4 py-2 text-sm font-semibold text-white shadow transition hover:bg-gray-600 hover:text-white cursor-pointer min-w-[120px] sm:min-w-[140px]"
                             >
                                 <svg className="h-5 w-5 flex-shrink-0" viewBox="0 0 48 48">
-                                  <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/>
-                                  <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/>
-                                  <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/>
-                                  <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>
+                                    <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z" />
+                                    <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z" />
+                                    <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z" />
+                                    <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z" />
                                 </svg>
                                 <span className="whitespace-nowrap">Google</span>
                             </button>
@@ -321,7 +316,7 @@ export default function SignupPage() {
                                 className="flex items-center justify-center gap-2 rounded-md bg-[#1877F2] px-4 py-2 text-sm font-semibold text-white shadow transition hover:bg-[#1565c0] hover:text-white cursor-pointer min-w-[120px] sm:min-w-[140px]"
                             >
                                 <svg className="h-5 w-5 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
-                                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
                                 </svg>
                                 <span className="whitespace-nowrap">Facebook</span>
                             </button>
